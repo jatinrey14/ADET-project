@@ -1,23 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt-strategy';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { JwtStrategy } from './jwt-strategy'; // Make sure the path to your jwt-strategy file is correct
 
 @Module({
   imports: [
-    UsersModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_ACCESS_TOKEN_SECRET || 'access_secret',
-      signOptions: {
-        expiresIn: (process.env.ACCESS_TOKEN_EXPIRES_IN || '900s') as any,
-      },
+      secret: 'YOUR_SECRET_KEY', // Or use ConfigService if you use environment variables
+      signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
+  providers: [AuthService, JwtStrategy], // <--- JwtStrategy MUST be listed here!
+  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
