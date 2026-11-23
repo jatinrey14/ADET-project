@@ -9,6 +9,7 @@ import { MeetingsModule } from './meetings/meetings.module';
 
 @Module({
   imports: [
+    AuthModule,
     DatabaseModule,
     UsersModule,
     InquiriesModule,
